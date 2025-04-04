@@ -1005,6 +1005,7 @@
     </script>
 
     -->
+    <!--
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const homeIcon = document.getElementById('home-icon');
@@ -1198,7 +1199,7 @@
             const message = `Join for the *${meetingName}* at 8pm.\n${link}`;
             const encodedMessage = encodeURIComponent(message);
             const whatsappURL = `https://api.whatsapp.com/send?text=${encodedMessage}`;
-            //window.location.href = whatsappURL; // Redirect to WhatsApp with the message
+            window.location.href = whatsappURL; // Redirect to WhatsApp with the message
         }
 
         // Service worker registration
@@ -1215,6 +1216,245 @@
         }
     </script>
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/church/service-worker.js')
+                    .then(function (registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function (error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+-->
+    <script>
+        // First script for navigation and UI handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const homeIcon = document.getElementById('home-icon');
+            const bibleIcon = document.getElementById('bible-icon');
+            const songsIcon = document.getElementById('songs-icon');
+            const programsIcon = document.getElementById('programs-icon');
+
+            const homeScreen = document.getElementById('home-screen');
+            const bibleSection = document.getElementById('bible-section');
+            const songsSection = document.getElementById('songs-section');
+            const programsSection = document.getElementById('programs-section');
+            const bottomNav = document.querySelector('.bottom-nav');
+
+            const backHome1 = document.getElementById('back-home1');
+            const backHome2 = document.getElementById('back-home2');
+            const backHome3 = document.getElementById('back-home3');
+
+            let interacted = false; // Flag to track if any screen has been opened
+
+            function hideAllSections() {
+                homeScreen.style.display = 'none';
+                bibleSection.style.display = 'none';
+                songsSection.style.display = 'none';
+                programsSection.style.display = 'none';
+            }
+
+            function showHomeScreen() {
+                hideAllSections();
+                homeScreen.style.display = 'block';
+                bottomNav.classList.remove('hidden'); // Show bottom nav on home screen
+
+                // Apply slide-right animation if interacted
+                if (interacted) {
+                    homeScreen.classList.remove('slide-left', 'slide-right');
+                    homeScreen.classList.add('slide-right');
+                }
+            }
+
+            function showSection(section, animationClass) {
+                hideAllSections();
+                section.style.display = 'block';
+                bottomNav.classList.add('hidden'); // Hide bottom nav when showing other sections
+                section.classList.add(animationClass);
+                interacted = true; // Set flag to true when navigating to another screen
+            }
+
+            // Show Bible section
+            bibleIcon.addEventListener('click', () => {
+                showSection(bibleSection, 'slide-left');
+            });
+
+            // Show Songs section
+            songsIcon.addEventListener('click', () => {
+                showSection(songsSection, 'slide-left');
+            });
+
+            // Show Programs section
+            programsIcon.addEventListener('click', () => {
+                showSection(programsSection, 'slide-left');
+            });
+
+            // Go back to Home from Bible
+            backHome1.addEventListener('click', () => {
+                showHomeScreen();
+            });
+
+            // Go back to Home from Songs
+            backHome2.addEventListener('click', () => {
+                showHomeScreen();
+            });
+
+            // Go back to Home from Programs
+            backHome3.addEventListener('click', () => {
+                showHomeScreen();
+            });
+
+            // Show Home screen by default
+            homeIcon.addEventListener('click', () => {
+                showHomeScreen();
+            });
+
+            // Initialize the home screen to be visible
+            showHomeScreen();
+
+            document.getElementById('refresh-bible').addEventListener('click', () => {
+                const bibleFrame = document.getElementById('bible-frame');
+                bibleFrame.src = bibleFrame.src; // Reload the iframe content
+            });
+
+            document.getElementById('refresh-songs').addEventListener('click', () => {
+                const songsFrame = document.getElementById('songs-frame');
+                songsFrame.src = songsFrame.src; // Reload the iframe content
+            });
+
+            // Handle mobile back button
+            window.addEventListener('popstate', () => {
+                showHomeScreen();
+            });
+
+            // Push state when navigating to sections
+            function pushState(title) {
+                history.pushState({ title: title }, title, `#${title}`);
+            }
+
+            bibleIcon.addEventListener('click', () => {
+                pushState('bible');
+                showSection(bibleSection, 'slide-left');
+            });
+
+            songsIcon.addEventListener('click', () => {
+                pushState('songs');
+                showSection(songsSection, 'slide-left');
+            });
+
+            programsIcon.addEventListener('click', () => {
+                pushState('programs');
+                showSection(programsSection, 'slide-left');
+            });
+
+            backHome1.addEventListener('click', () => {
+                pushState('home');
+                showHomeScreen();
+            });
+
+            backHome2.addEventListener('click', () => {
+                pushState('home');
+                showHomeScreen();
+            });
+
+            backHome3.addEventListener('click', () => {
+                pushState('home');
+                showHomeScreen();
+            });
+
+            // Set initial state
+            if (window.location.hash) {
+                const sectionId = window.location.hash.replace('#', '');
+                if (sectionId === 'bible') {
+                    showSection(bibleSection, 'slide-left');
+                } else if (sectionId === 'songs') {
+                    showSection(songsSection, 'slide-left');
+                } else if (sectionId === 'programs') {
+                    showSection(programsSection, 'slide-left');
+                } else {
+                    showHomeScreen();
+                }
+            } else {
+                showHomeScreen();
+            }
+        });
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAaQdWKBdtqqe3pu9XDdPoFuvcEm2YG_wA",
+            authDomain: "melam-rahul.firebaseapp.com",
+            projectId: "melam-rahul",
+            storageBucket: "melam-rahul.appspot.com",
+            messagingSenderId: "742315739002",
+            appId: "1:742315739002:web:329ea957fa38f66ab078c3",
+            measurementId: "G-SCNKZYJ3TT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let currentMeeting = '';
+        let meetingLink = '';
+
+        function encodeTimestamp(date) {
+            return Math.floor(date.getTime() / 1000); // Return Unix timestamp in seconds
+        }
+
+        function generateExpirableLink(meetingType) {
+            const tails = {
+                'Church-Meeting': 'CM',
+                'Bible-Study': 'BS',
+                'Sisters-Meet': 'SM',
+                'Youth-Meeting': 'YM'
+            };
+
+            const baseURL = `https://church-at-guntur.github.io/church/${tails[meetingType]}`;
+
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 1); // 1 day expiration
+            const encodedTimestamp = encodeTimestamp(expiryDate);
+
+            // Use the full meeting type for the 'meet' parameter
+            return `${baseURL}?meet=${meetingType}&Id=${encodedTimestamp}`;
+        }
+
+        // Modified function to use the Web Share API
+        // Modified function to use the Web Share API
+        // Modified function to use the Web Share API
+        function openWhatsApp(meetingType, link) {
+            const meetingName = meetingType.replace(/-/g, ' ');
+            const message = `Join for the *${meetingName}* at 8pm.\n${link}`;
+
+            // Check if Web Share API is supported
+            if (navigator.share) {
+                navigator.share({
+                    title: `${meetingName} Invitation`,
+                    text: message,
+                    url: link
+                })
+                    .catch(error => {
+                        console.error('Error sharing:', error);
+                        // Do not trigger any fallback when there's an error
+                        // This ensures no redirection happens when user cancels/aborts
+                        // Only use fallback if Web Share API is completely unavailable
+                    });
+            } else {
+                // Fallback only for browsers that don't support the Web Share API at all
+                //fallbackShare(message);
+            }
+        }
+
+        // Fallback function for browsers without Web Share API support
+        function fallbackShare(message) {
+            const encodedMessage = encodeURIComponent(message);
+            // Default to WhatsApp as fallback
+            const whatsappURL = `https://api.whatsapp.com/send?text=${encodedMessage}`;
+            window.location.href = whatsappURL;
+        }
+
+        // Service worker registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/church/service-worker.js')
