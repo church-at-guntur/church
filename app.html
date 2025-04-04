@@ -1421,8 +1421,6 @@
         }
 
         // Modified function to use the Web Share API
-        // Modified function to use the Web Share API
-        // Modified function to use the Web Share API
         function openWhatsApp(meetingType, link) {
             const meetingName = meetingType.replace(/-/g, ' ');
             const message = `Join for the *${meetingName}* at 8pm.\n${link}`;
@@ -1432,26 +1430,15 @@
                 navigator.share({
                     title: `${meetingName} Invitation`,
                     text: message,
-                    url: link
+                    // Don't include the URL parameter as it's already in the text
+                    // This prevents duplication
                 })
                     .catch(error => {
                         console.error('Error sharing:', error);
-                        // Do not trigger any fallback when there's an error
-                        // This ensures no redirection happens when user cancels/aborts
-                        // Only use fallback if Web Share API is completely unavailable
                     });
             } else {
-                // Fallback only for browsers that don't support the Web Share API at all
-                //fallbackShare(message);
+                // Fallback code if needed (currently empty)
             }
-        }
-
-        // Fallback function for browsers without Web Share API support
-        function fallbackShare(message) {
-            const encodedMessage = encodeURIComponent(message);
-            // Default to WhatsApp as fallback
-            const whatsappURL = `https://api.whatsapp.com/send?text=${encodedMessage}`;
-            window.location.href = whatsappURL;
         }
 
         // Service worker registration
