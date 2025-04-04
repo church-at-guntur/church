@@ -193,79 +193,53 @@
         </div>
     </div>
     <script>
-        // Google Meet URL
-        const meetingUrl = 'https://meet.google.com/zyq-zygx-tym';
-
         function decodeTimestamp(encodedTimestamp) {
-            return new Date(encodedTimestamp * 1000); // Convert Unix timestamp to Date object
+            return new Date(encodedTimestamp * 1000);
         }
-
+    
         function encodeTimestamp(date) {
-            return Math.floor(date.getTime() / 1000); // Convert Date object to Unix timestamp
+            return Math.floor(date.getTime() / 1000);
         }
-
+    
         function isLinkExpired(expiryDate) {
-            return new Date() > expiryDate; // Check if current date is past expiry date
+            return new Date() > expiryDate;
         }
-
-        function displayExpiryMessage() {
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('meet-info').style.display = 'flex';
-            document.getElementById('join-section').style.display = 'none';
-            document.getElementById('expiry-message').classList.remove('hidden');
-        }
-
+    
         function displayInvalidLinkMessage() {
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('meet-info').style.display = 'flex';
-            document.getElementById('join-section').style.display = 'none';
-            document.getElementById('invalid-link-message').classList.remove('hidden');
+            document.getElementById('meet-info')?.remove();
+            document.getElementById('join-section')?.remove();
+            document.getElementById('invalid-link-message')?.classList.remove('hidden');
         }
-
-        function redirectToMeeting() {
-            window.location.href = meetingUrl;
+    
+        function redirectToGoogleMeet() {
+            // Replace with your actual Google Meet link
+            window.location.replace('https://meet.google.com/zyq-zygx-tym');
         }
-
+    
         function checkExpiryAndRedirect() {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedTimestamp = urlParams.get('Id');
-            
-            // Hide content initially
-            document.getElementById('meet-info').style.display = 'none';
-            document.getElementById('join-section').style.display = 'none';
-
+    
             if (encodedTimestamp) {
                 const timestamp = Number(encodedTimestamp);
-
-                // Validate that the encoded timestamp is a valid number and within reasonable bounds
+    
                 if (!isNaN(timestamp) && timestamp > 0) {
                     const expiryDate = decodeTimestamp(timestamp);
-
-                    // Validate that the timestamp is within a reasonable range
-                    const maxValidTimestamp = encodeTimestamp(new Date(Date.now() + 24 * 60 * 60 * 1000)); // 1 day expiration
+                    const maxValidTimestamp = encodeTimestamp(new Date(Date.now() + 24 * 60 * 60 * 1000));
+    
                     if (timestamp <= maxValidTimestamp && !isLinkExpired(expiryDate)) {
-                        // Valid link - redirect immediately
-                        window.location.href = meetingUrl;
+                        redirectToGoogleMeet();
                         return;
                     }
-                    // Link expired but was valid
-                    displayExpiryMessage();
-                    return;
                 }
             }
-
-            // Invalid link parameters
+    
+            // Show error message if invalid or expired
             displayInvalidLinkMessage();
         }
-
-        // Execute immediately when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Attempt immediate redirect
-            checkExpiryAndRedirect();
-        });
-
-        // Execute even before DOMContentLoaded for faster response
-        checkExpiryAndRedirect();
+    
+        window.onload = checkExpiryAndRedirect;
     </script>
+    
 </body>
 </html>
