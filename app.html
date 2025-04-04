@@ -1410,14 +1410,14 @@
                 'Youth-Meeting': 'YM'
             };
 
-            const baseURL = `https://church-at-guntur.github.io/church/${tails[meetingType]}`;
+            const baseURL = `https://church-at-guntur.github.io/online/${tails[meetingType]}`;
 
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 1); // 1 day expiration
             const encodedTimestamp = encodeTimestamp(expiryDate);
 
             // Use the full meeting type for the 'meet' parameter
-            return `${baseURL}?meet=${meetingType}&Id=${encodedTimestamp}`;
+            return `${baseURL}?meet=${meetingType}`;
         }
 
         // Modified function to use the Web Share API
