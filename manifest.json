@@ -2,7 +2,7 @@
   "name": "Church At Guntur",
   "short_name": "Church at Guntur",
   "start_url": "/church/app",
-  "scope": "/"
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#293B66",
