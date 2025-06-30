@@ -13,20 +13,72 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Fast redirect logic -->
   <script>
-    (function () {
-      const isInstalled = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true || document.referrer.startsWith('android-app://');
-      if (isInstalled) {
-        const link = document.createElement('a');
-        link.href = 'https://meet.google.com/ffp-craj-bhk';
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        history.back();
+    (async function () {
+      let isPWAInstalled = false; // Flag to track if PWA is considered installed
+      const pwaManifestUrl = 'https://church-at-guntur.github.io/church/app/manifest.json'; // Your PWA's manifest URL
+      const googleMeetLink = 'https://meet.google.com/ffp-craj-bhk'; // The Google Meet link
+
+      // --- Step 1: Attempt to detect PWA installation using getInstalledRelatedApps() ---
+      // This is the most precise method for PWAs, especially for newer installs
+      // or those that have updated their manifest to include 'related_applications'.
+      if ('getInstalledRelatedApps' in navigator) {
+        try {
+          const apps = await navigator.getInstalledRelatedApps();
+          // Check if our specific PWA (platform 'webapp' and matching manifest URL) is in the list
+          isPWAInstalled = apps.some(app =>
+            app.platform === 'webapp' &&
+            app.url === pwaManifestUrl
+          );
+          // console.log("getInstalledRelatedApps check result:", isPWAInstalled); // For debugging
+        } catch (e) {
+          console.warn('Error checking getInstalledRelatedApps:', e);
+          // If the API call fails (e.g., permissions, browser issues),
+          // we'll proceed to the fallback checks.
+        }
+      }
+
+      // --- Step 2: Fallback checks for PWA context (for older installs or unsupported browsers) ---
+      // This block runs ONLY if getInstalledRelatedApps() didn't confirm installation.
+      // It uses display-mode and referrer to infer if the page is running in an app-like environment.
+      if (!isPWAInstalled) {
+        const isStandaloneMode =
+          window.matchMedia('(display-mode: standalone)').matches ||
+          window.navigator.standalone === true; // iOS-specific check for standalone mode
+
+        const isLaunchedFromAndroidApp = document.referrer.startsWith('android-app://'); // Common for Android app launches
+
+        if (isStandaloneMode || isLaunchedFromAndroidApp) {
+          isPWAInstalled = true;
+          // console.log("Fallback (standalone/referrer) check result:", isPWAInstalled); // For debugging
+        }
+      }
+
+      // --- Step 3: Act based on the final PWA installation status ---
+      if (isPWAInstalled) {
+        // PWA is considered installed or running in an app-like context.
+        // Attempt to open the Google Meet link in a new, external browser tab.
+        const newWindow = window.open(googleMeetLink, '_blank', 'noopener,noreferrer');
+
+        // Check if the new window/tab was successfully opened.
+        // window.open can return null if a popup blocker prevents it, or if
+        // the browser forces it to open internally despite '_blank'.
+        if (newWindow) {
+          // New external tab/window opened successfully.
+          // Now, optionally navigate the current PWA window back after a short delay.
+          // The delay gives the new tab a moment to load.
+          setTimeout(() => history.back(), 500);
+        } else {
+          // If window.open was blocked or didn't open externally,
+          // as a fallback, redirect the current PWA window to the Meet link.
+          // This might still open in the PWA's internal browser, but it's the next best option.
+          console.warn('Failed to open Google Meet in a new external window. Redirecting current page to Meet link.');
+          window.location.href = googleMeetLink;
+        }
       } else {
-        location.replace('/church/install-app');
+        // PWA is not detected as installed or running in an app-like context.
+        // Redirect the user to the installation instructions page.
+        location.replace('/online/install-app');
       }
     })();
   </script>
