@@ -725,11 +725,11 @@
                 try {
                     const title = document.querySelector('meta[property="og:title"]').content;
                     const description = document.querySelector('meta[property="og:description"]').content;
-                    const url = "https://church-at-guntur.github.io/church/app-install";
+                    const url = "https://church-at-guntur.github.io/church/install-app";
 
-                    const introMessage = `హాయ్, Church at Guntur లో భాగస్వాములుగా చేరినందుకు ధన్యవాదములు.\n`;
+                    const introMessage = ``;
 
-                    const message = `Church at Guntur ఆన్లైన్ ద్వారా నిర్వహిస్తున్న మీటింగ్స్ లకు జాయిన్ అవ్వడానికి ఈ App ఉపయోగించుకోగలరు.\nకింద పంపబడిన లింక్ ను క్లిక్ చేసి Install చేసుకోగలరు.\n\n📲 యాప్ లింక్:\n*${url}*\n\n`;
+                    const message = `*హాయ్, Church at Guntur లో భాగస్వాములుగా చేరినందుకు ధన్యవాదములు*.\n\nChurch at Guntur ఆన్లైన్ ద్వారా నిర్వహిస్తున్న మీటింగ్స్ లకు జాయిన్ అవ్వడానికి ఈ App ఉపయోగించుకోగలరు.\nకింద పంపబడిన లింక్ ను క్లిక్ చేసి Install చేసుకోగలరు.\n\n📲 యాప్ లింక్:\n*${url}*\n\n`;
 
                     await navigator.share({
                         title: title,
