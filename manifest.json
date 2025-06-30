@@ -26,5 +26,12 @@
       "type": "image/jpeg",
       "orientation": "portrait"
     }
-  ]
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://church-at-guntur.github.io/church/app/manifest.json"
+    }
+  ],
+  "prefer_related_applications": false
 }
