@@ -13,101 +13,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <script>
-    (async function () {
-      let isPWAInstalled = false;
-      const pwaManifestUrl = 'https://church-at-guntur.github.io/church/app/manifest.json';
-      const googleMeetWebLink = 'https://meet.google.com/ffp-craj-bhk';
+(async function () {
+  let isPWAInstalled = false;
 
-      // Android Intent URL for Google Meet
-      // This attempts to open the meeting directly in the Google Meet app.
-      // If the app is not installed, it falls back to the web link.
-      const googleMeetAppIntent =
-        'intent://meet.google.com/ffp-craj-bhk#Intent;' +
-        'package=com.google.android.apps.meetings;' + // Google Meet app package name
-        'scheme=https;' +
-        'end;';
+  // --- Detect installed app ---
+  if ('getInstalledRelatedApps' in navigator) {
+    try {
+      const apps = await navigator.getInstalledRelatedApps();
+      isPWAInstalled = apps.some(app =>
+        app.platform === 'webapp' &&
+        app.url.includes('/church/app/manifest.json')
+      );
+    } catch (e) {
+      console.warn('getInstalledRelatedApps failed:', e);
+    }
+  }
 
-      // --- Step 1: Attempt to detect PWA installation using getInstalledRelatedApps() ---
-      if ('getInstalledRelatedApps' in navigator) {
-        try {
-          const apps = await navigator.getInstalledRelatedApps();
-          isPWAInstalled = apps.some(app =>
-            app.platform === 'webapp' &&
-            app.url === pwaManifestUrl
-          );
-        } catch (e) {
-          console.warn('Error checking getInstalledRelatedApps:', e);
-        }
-      }
+  // --- Fallback PWA checks ---
+  if (!isPWAInstalled) {
+    const isStandaloneMode =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true ||
+      document.referrer.startsWith('android-app://');
+    if (isStandaloneMode) {
+      isPWAInstalled = true;
+    }
+  }
 
-      // --- Step 2: Fallback checks for PWA context (for older installs or unsupported browsers) ---
-      if (!isPWAInstalled) {
-        const isStandaloneMode =
-          window.matchMedia('(display-mode: standalone)').matches ||
-          window.navigator.standalone === true;
+  // --- Action based on detection ---
+  if (isPWAInstalled) {
+    // Open Google Meet in external browser tab
+    const meetLink = 'https://meet.google.com/ffp-craj-bhk';
+    const link = document.createElement('a');
+    link.href = meetLink;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
 
-        const isLaunchedFromAndroidApp = document.referrer.startsWith('android-app://');
-
-        if (isStandaloneMode || isLaunchedFromAndroidApp) {
-          isPWAInstalled = true;
-        }
-      }
-
-      // --- Step 3: Act based on the final PWA installation status ---
-      if (isPWAInstalled) {
-        // Try to open the Google Meet app using the Intent URL
-        // If it fails (e.g., app not installed, or intent not handled),
-        // the browser will typically fall back to the provided URL (googleMeetWebLink).
-        const attemptedOpen = window.open(googleMeetAppIntent, '_self'); // Try _self first to allow intent to take over
-
-        // Small delay before checking if it opened or if we need to fall back to web link
-        setTimeout(() => {
-          // If the window is still open and hasn't navigated away (meaning intent probably failed)
-          // or if attemptedOpen is null (popup blocked for _blank, not applicable for _self here)
-          // then manually open the web link.
-          // This logic is tricky, as successful intent opening will change the current window.
-          // A more robust check would involve focus or visibility APIs, but this is simpler.
-          // If the intent successfully launched the app, this page should go into background.
-          // If it failed, it might just stay on this page or redirect to Play Store.
-          // Let's assume if it's still on this page after a delay, the intent failed.
-
-          // IMPORTANT: If the intent successfully launches the app, this script will still continue
-          // and try to redirect. This is a common challenge with intent URLs.
-          // A more sophisticated approach would involve a short timeout and then check if the
-          // window is still active, but it gets complicated quickly.
-          // For now, let's keep the simple logic that relies on the intent to take over.
-
-          // If the app successfully launched, we want to go back.
-          // If the app did NOT launch and we are still on this page, then we should try the web link.
-          // We can't reliably know if the app launched from here.
-          // The best we can do is try the intent, and if the user is still here, offer the web link.
-
-          // The original code uses history.back() after opening. Let's stick with that
-          // assuming the intent or new window opening will either switch apps or open a new tab.
-          // If it opened in the webview, the user is still stuck with the playstore prompt.
-
-          // Let's try opening the intent in a new tab first, to avoid navigating the PWA itself.
-          const newWindow = window.open(googleMeetAppIntent, '_blank', 'noopener,noreferrer');
-
-          if (!newWindow || newWindow.closed || typeof newWindow.focus !== 'function') {
-            // Intent failed to open in a new tab, or new tab was blocked.
-            // Fallback to opening the web link in the current window (might still be webview).
-            console.warn('Failed to open Google Meet app via intent or new tab. Redirecting current page to web link.');
-            window.location.href = googleMeetWebLink;
-          } else {
-             // New tab (with intent or web link) opened successfully.
-             // Go back on the current PWA page.
-             history.back();
-          }
-
-        }, 100); // Small delay to allow the browser to process the intent/open
-
-      } else {
-        // PWA is not detected as installed or running in an app-like context.
-        location.replace('/online/install-app');
-      }
-    })();
-  </script>
+    // Return from current PWA page
+    setTimeout(() => history.back(), 500);
+  } else {
+    location.replace('/online/install-app');
+  }
+})();
+</script>
 </head>
 <body></body>
 </html>
