@@ -599,6 +599,31 @@
             cursor: pointer;
             font-size: 1.2rem;
         }
+
+        .iframe-loader {
+            position: absolute;
+            inset: 0;
+            background: #0B1023;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #1C2B4F;
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -762,9 +787,16 @@
         </div>
 
         <div id="iframe-wrapper">
+
+            <div class="iframe-loader" id="songs-loader">
+                <div class="spinner"></div>
+            </div>
+
             <iframe id="masked-iframe-songs" src="https://christianlyricz.com/">
             </iframe>
+
         </div>
+
 
     </div>
 
@@ -939,6 +971,22 @@
             const searchInput = document.getElementById("songs-search-input");
             const searchBtn = document.getElementById("songs-search-btn");
             const iframeSongs = document.getElementById("masked-iframe-songs");
+            const loader = document.getElementById("songs-loader");
+
+            // show immediately on page load
+            loader.style.display = "flex";
+
+            // hide when iframe finishes loading
+            iframeSongs.addEventListener("load", () => {
+                loader.style.display = "none";
+            });
+
+            // helper for future navigations (search, refresh, etc)
+            function navigateIframe(url) {
+                loader.style.display = "flex";
+                iframeSongs.src = url;
+            }
+
 
             searchToggle.onclick = () => {
                 const isOpen = searchBox.style.display === "flex";
@@ -958,7 +1006,7 @@
                 if (e.key === "Enter") runSongSearch();
             });
 
-            async function runSongSearch() {    
+            async function runSongSearch() {
                 const query = searchInput.value.trim();
                 if (!query) return;
 
