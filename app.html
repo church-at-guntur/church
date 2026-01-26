@@ -761,7 +761,7 @@
             <img src="https://cdn-icons-png.flaticon.com/512/2546/2546705.png" id="refresh-bible">
         </div>
 
-        <div id="iframe-wrapper-bible"">
+        <div id="iframe-wrapper-bible">
             <iframe id="masked-iframe" src="https://www.wordproject.org/bibles/audio/29_telugu/index.htm"
                 frameborder="0">
             </iframe>
@@ -1062,25 +1062,11 @@
                 interacted = true; // Set flag to true when navigating to another screen
             }
 
-            // Show Bible section
-            bibleIcon.addEventListener('click', () => {
-                showSection(bibleSection, 'slide-left');
-            });
-
-            // Show Songs section
-            songsIcon.addEventListener('click', () => {
-                showSection(songsSection, 'slide-left');
-            });
 
             // Show Programs section
             programsIcon.addEventListener('click', () => {
                 showSection(programsSection, 'slide-left');
             });
-
-            // Go back to Home from Bible
-            // backHome1.addEventListener('click', () => {
-            //     showHomeScreen();
-            // });
 
             // Go back to Home from Songs
             backHome2.addEventListener('click', () => {
