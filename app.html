@@ -65,6 +65,8 @@
     <link rel="manifest" href="/church/manifest.json" crossorigin="use-credentials">
     <link rel="apple-touch-icon" href="/church/Icon192.png"> <!-- iOS splash icon -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://www.google.com/jsapi"></script>
     <style>
         * {
             margin: 0;
@@ -78,7 +80,6 @@
             color: white;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -491,6 +492,113 @@
             width: 100%;
             height: calc(110% + 565px);
         }
+
+        #masked-iframe-songs {
+            position: absolute;
+            top: -130px;
+            width: 100%;
+            height: calc(110% + 565px);
+        }
+
+        .frame-container-songs {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            overflow: hidden;
+            border-top: 1px solid #ccc;
+        }
+
+        .songs-search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            border: 2px solid #1C2B4F;
+            border-radius: 25px;
+        }
+
+        .songs-search-toggle {
+            display: flex;
+            font-size: 15px;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .songs-search-box {
+            display: none;
+            margin: 12px 0;
+            gap: 10px;
+        }
+
+        .songs-search-box input {
+            flex: 1;
+            height: 50px;
+            background: #0B1023;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0 20px;
+            border: 3px solid #1C2B4F;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .songs-search-box button {
+            width: 55px;
+            border-radius: 50%;
+            border: none;
+            background: #1C2B4F;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .songs-search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border: 2px solid #1C2B4F;
+            border-radius: 25px;
+        }
+
+        .songs-search-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .songs-search-box {
+            display: none;
+            margin: 12px 0;
+            gap: 10px;
+        }
+
+        .songs-search-box input {
+            flex: 1;
+            height: 50px;
+            background: #0B1023;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0 20px;
+            border: 3px solid #1C2B4F;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .songs-search-box button {
+            width: 55px;
+            border-radius: 50%;
+            border: none;
+            background: #1C2B4F;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 
@@ -595,7 +703,7 @@
                     style="padding: 5px 10px; margin: 10px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: medium; border: 2px solid #1C2B4F; border-radius: 20px; background: transparent; color: white; text-align: center; height: 15px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         Share App <img src="https://church-at-guntur.github.io/church/programs/refresh.png"
-                            style="width: 30px; height: 30px;" alt="refresh" id="refresh-bible">
+                            style="width: 30px; height: 30px;" alt="refresh">
                     </div>
                     <p style="font-size: 12px; margin-top: -5px; color: #999;">Share this App to your Co-Church members.
                     </p>
@@ -615,18 +723,6 @@
 
 
     <!-- Bible Section -->
-    <!-- <div class="container" id="bible-section" style="margin-top: 20px;">
-        <div class="top-nav">
-            <img src="https://cdn-icons-png.flaticon.com/512/786/786399.png" alt="back" id="back-home1">
-            <h3>Telugu Bible</h3>
-            <img src="https://cdn-icons-png.flaticon.com/512/2546/2546705.png" alt="refresh" id="refresh-bible">
-        </div>
-        <div id="iframe-wrapper">
-            <iframe id="masked-iframe" src="https://www.wordproject.org/bibles/audio/29_telugu/index.htm"
-                frameborder="0">
-            </iframe>
-        </div>
-    </div> -->
     <div class="container" id="bible-section" style="margin-top:20px;">
         <div class="top-nav">
             <img src="https://cdn-icons-png.flaticon.com/512/786/786399.png" id="back-home1">
@@ -635,25 +731,41 @@
         </div>
 
         <div id="iframe-wrapper">
-            <iframe id="masked-iframe" src="https://www.wordproject.org/bibles/audio/29_telugu/index.htm" frameborder="0">
+            <iframe id="masked-iframe" src="https://www.wordproject.org/bibles/audio/29_telugu/index.htm"
+                frameborder="0">
             </iframe>
         </div>
     </div>
 
+    <div class="container" id="songs-section">
 
-
-    <!-- Songs Section  -->
-    <div class="container" id="songs-section" style="margin-top: 20px;">
         <div class="top-nav">
-            <img src="https://cdn-icons-png.flaticon.com/512/786/786399.png" alt="back" id="back-home2">
+            <img src="https://cdn-icons-png.flaticon.com/512/786/786399.png" id="back-home2">
             <h3>Songs</h3>
-            <img src="https://cdn-icons-png.flaticon.com/512/2546/2546705.png" alt="refresh" id="refresh-songs">
+            <img src="https://cdn-icons-png.flaticon.com/512/2546/2546705.png" id="refresh-songs">
         </div>
+
+        <div class="songs-search-header">
+            <h2>Songs</h2>
+
+            <div class="songs-search-toggle">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </div>
+        </div>
+
+        <div class="songs-search-box" id="songs-search-box">
+            <input id="songs-search-input" type="text" placeholder="Search songs in తెలుగు...">
+            <button id="songs-search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
         <div id="iframe-wrapper">
-            <iframe id="masked-iframe" src="https://christianlyricz.com/"
-                frameborder="0">
+            <iframe id="masked-iframe-songs" src="https://christianlyricz.com/">
             </iframe>
         </div>
+
     </div>
 
 
@@ -792,6 +904,7 @@
             const refreshBtn = document.getElementById("refresh-bible");
 
             const HOME_URL = "https://www.wordproject.org/bibles/audio/29_telugu/index.htm";
+            const songsHOME_URL = "https://christianlyricz.com/";
 
             let inBibleHome = false;
 
@@ -800,7 +913,7 @@
 
             // refresh
             refreshBtn.onclick = () => {
-                iframe.src = iframe.src;
+                iframe.src = HOME_URL;
             };
 
             // back button
@@ -820,6 +933,53 @@
                     inBibleHome = false;
                 }
             });
+
+            const searchToggle = document.querySelector(".songs-search-toggle");
+            const searchBox = document.getElementById("songs-search-box");
+            const searchInput = document.getElementById("songs-search-input");
+            const searchBtn = document.getElementById("songs-search-btn");
+            const iframeSongs = document.getElementById("masked-iframe-songs");
+
+            searchToggle.onclick = () => {
+                const isOpen = searchBox.style.display === "flex";
+
+                if (isOpen) {
+                    searchBox.style.display = "none";
+                } else {
+                    searchBox.style.display = "flex";
+                    searchInput.focus();
+                }
+            };
+
+
+            searchBtn.onclick = runSongSearch;
+
+            searchInput.addEventListener("keydown", e => {
+                if (e.key === "Enter") runSongSearch();
+            });
+
+            async function runSongSearch() {    
+                const query = searchInput.value.trim();
+                if (!query) return;
+
+                const teluguQuery = await translateToTelugu(query);
+
+                iframeSongs.src = `https://christianlyricz.com/?s=${encodeURIComponent(teluguQuery)}`;
+                console.log("Searching for:", teluguQuery);
+            }
+
+            async function translateToTelugu(text) {
+                const url = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=te-t-i0-und&num=1`;
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                // Google's response format: ["SUCCESS", [[input, [results...]]]]
+                if (data[0] !== "SUCCESS") return text;
+
+                return data[1][0][1][0] || text;
+            }
+
 
             function hideAllSections() {
                 homeScreen.style.display = 'none';
@@ -887,13 +1047,11 @@
             showHomeScreen();
 
             document.getElementById('refresh-bible').addEventListener('click', () => {
-                const bibleFrame = document.getElementById('bible-frame');
-                bibleFrame.src = bibleFrame.src; // Reload the iframe content
+                iframe.src = HOME_URL; // Reload the iframe content
             });
 
             document.getElementById('refresh-songs').addEventListener('click', () => {
-                const songsFrame = document.getElementById('songs-frame');
-                songsFrame.src = songsFrame.src; // Reload the iframe content
+                iframeSongs.src = songsHOME_URL // Reload the iframe content
             });
 
             // Handle mobile back button
