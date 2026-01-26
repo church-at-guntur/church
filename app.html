@@ -1006,10 +1006,14 @@
             };
 
 
-            searchBtn.onclick = runSongSearch;
+            searchBtn.onclick = () => {
+              runSongSearch();
+              searchInput.blur();
+            };
 
             searchInput.addEventListener("keydown", e => {
                 if (e.key === "Enter") runSongSearch();
+                searchInput.blur();
             });
 
             async function runSongSearch() {
