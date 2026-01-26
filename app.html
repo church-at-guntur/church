@@ -49,9 +49,14 @@
 
             console.log("All browser storage cleared.");
         })();
+        
     </script>
 
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://www.wordproject.org">
+    <link rel="preconnect" href="https://christianlyricz.com">
+    <link rel="dns-prefetch" href="https://www.wordproject.org">
+    <link rel="dns-prefetch" href="https://christianlyricz.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Church At Guntur</title>
     <!-- Favicon Links -->
@@ -478,7 +483,8 @@
             background-color: #c0392b;
         }
 
-        #iframe-wrapper {
+        #iframe-wrapper-bible, 
+        #iframe-wrapper-songs {
             position: relative;
             height: 700px;
             border-radius: 25px;
@@ -755,7 +761,7 @@
             <img src="https://cdn-icons-png.flaticon.com/512/2546/2546705.png" id="refresh-bible">
         </div>
 
-        <div id="iframe-wrapper">
+        <div id="iframe-wrapper-bible"">
             <iframe id="masked-iframe" src="https://www.wordproject.org/bibles/audio/29_telugu/index.htm"
                 frameborder="0">
             </iframe>
@@ -786,7 +792,7 @@
             </button>
         </div>
 
-        <div id="iframe-wrapper">
+        <div id="iframe-wrapper-songs">
 
             <div class="iframe-loader" id="songs-loader">
                 <div class="spinner"></div>
@@ -941,7 +947,7 @@
             let inBibleHome = false;
 
             // initial load
-            iframe.src = HOME_URL;
+            // iframe.src = HOME_URL;
 
             // refresh
             refreshBtn.onclick = () => {
@@ -1095,11 +1101,11 @@
             showHomeScreen();
 
             document.getElementById('refresh-bible').addEventListener('click', () => {
-                iframe.src = HOME_URL; // Reload the iframe content
+                // iframe.src = HOME_URL; // Reload the iframe content
             });
 
             document.getElementById('refresh-songs').addEventListener('click', () => {
-                iframeSongs.src = songsHOME_URL // Reload the iframe content
+                // iframeSongs.src = songsHOME_URL; // Reload the iframe content
             });
 
             // Handle mobile back button
