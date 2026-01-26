@@ -1001,19 +1001,19 @@
                     searchBox.style.display = "none";
                 } else {
                     searchBox.style.display = "flex";
-                    searchInput.focus();
+                    
                 }
             };
 
 
             searchBtn.onclick = () => {
               runSongSearch();
-              searchInput.blur();
+              //searchInput.blur();
             };
 
             searchInput.addEventListener("keydown", e => {
                 if (e.key === "Enter") runSongSearch();
-                searchInput.blur();
+               // searchInput.blur();
             });
 
             async function runSongSearch() {
